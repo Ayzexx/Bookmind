@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookMind - Test Platformasi</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; user-select: none; -webkit-user-select: none; }
+    .card { border: 1px solid #ccc; padding: 15px; border-radius: 8px; max-width: 400px; margin: 0 auto; }
+    .btn { background: #008cba; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+    #timer { font-weight: bold; color: red; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+  <div class="card" id="book-section">
+    <h2>1-Qadam: Kitobni o'qing</h2>
+    <p>Kitob tayyor. O'qib bo'lgach, testni boshlang.</p>
+    <button class="btn" onclick="startTest()">Testni boshlash</button>
+  </div>
+
+  <div class="card hidden" id="test-section">
+    <h2>Test jarayoni</h2>
+    <p>Qolgan vaqt: <span id="timer">30</span> soniya</p>
+    <p><strong>1-savol:</strong> Kitobning asosiy g'oyasi nima?</p>
+    <button class="btn" onclick="finishTest(true)">A) To'g'ri javob</button><br><br>
+    <button class="btn" onclick="finishTest(false)">B) Noto'g'ri javob</button>
+  </div>
+
+  <script>
+    let timeLeft = 30;
+    let timerId = null;
+    let testActive = false;
+
+    function startTest() {
+      document.getElementById('book-section').classList.add('hidden');
+      document.getElementById('test-section').classList.remove('hidden');
+      testActive = true;
+
+      timerId = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          alert("Vaqt tugadi! Test bekor qilindi.");
+          resetTest();
+        }
+      }, 1000);
+    }
+
+    // Xavfsizlik: Ilovadan/vkladkadan chiqib ketsa test atmen bo'ladi
+    document.addEventListener("visibilitychange", function() {
+      if (document.hidden && testActive) {
+        alert("Siz boshqa ilovaga o'tdingiz! Qoidalarga ko'ra test bekor qilindi.");
+        resetTest();
+      }
+    });
+
+    function finishTest(isCorrect) {
+      clearInterval(timerId);
+      testActive = false;
+      if(isCorrect) {
+        alert("Tabriklaymiz! Testdan o'tdingiz.");
+      } else {
+        alert("Noto'g'ri javob. Qaytadan urinib ko'ring.");
+      }
+      location.reload();
+    }
+
+    function resetTest() {
+      clearInterval(timerId);
+      testActive = false;
+      location.reload();
+    }
+  </script>
+</body>
+</html>
+  
